@@ -121,10 +121,10 @@ deps/foreman:
 	@type ogr2ogr 2> /dev/null 1>&2 || sudo gem install foreman || (echo "Please install foreman" && false)
 
 deps/gdal:
-	@type ogr2ogr 2> /dev/null 1>&2 || brew install gdal || (echo "Please install gdal" && false)
+	@type ogr2ogr 2> /dev/null 1>&2 || brew install gdal > /dev/null 2>&1 || sudo apt-get install gdal-bin || (echo "Please install gdal" && false)
 
 deps/pv:
-	@type pv 2> /dev/null 1>&2 || brew install pv || (echo "Please install pv" && false)
+	@type pv 2> /dev/null 1>&2 || brew install pv > /dev/null 2>&1 || sudo apt-get install pv || (echo "Please install pv" && false)
 
 deps/npm:
 	@npm install
@@ -137,7 +137,10 @@ data/cpad_2014b7_superunits_name_manager_access.zip:
 	mkdir -p $$(dirname $@)
 	curl -sLf http://websites.greeninfo.org/common_data/California/Public_Lands/CPAD/dev/CPAD2014b/cpad_2014b7_superunits_name_manager_access.zip -o $@
 
-
+data/CPAD_2015b_superunits_name_manager_access.zip:
+	mkdir -p $$(dirname $@)
+	curl -sLf http://atlas.ca.gov/casil/planning/Land_Ownership/GreenInfoNetworkProject/CPAD-2015b-December2015/CPAD_2015b.zip -o $@
+        
 db: DATABASE_URL deps/npm
 	@psql -c "SELECT 1" > /dev/null 2>&1 || \
 	createdb
@@ -147,7 +150,9 @@ db/all: db/cpad_superunits db/flickr db/foursquare db/instagram
 db/postgis: db
 	$(call create_extension)
 
-db/cpad: db/cpad_2014b7
+db/cpad_2014: db/cpad_2014b7
+
+db/cpad_2015: db/CPAD_2015b
 
 db/cpad_2014b7: db/postgis data/cpad_2014b7_superunits_name_manager_access.zip deps/gdal deps/pv deps/npm
 	@psql -c "\d cpad_2014b7" > /dev/null 2>&1 || \
@@ -160,7 +165,21 @@ db/cpad_2014b7: db/postgis data/cpad_2014b7_superunits_name_manager_access.zip d
 		-f PGDump /vsistdout/ \
 		/vsizip/$(word 2,$^)/cpad_2014b7_superunits_name_manager_access.shp | pv | psql -q
 
-db/cpad_superunits: db/cpad
+db/CPAD_2015b: db/postgis data/CPAD_2015b_superunits_name_manager_access.zip deps/gdal deps/pv deps/npm
+	@psql -c "\d CPAD_2015b" > /dev/null 2>&1 || \
+	ogr2ogr --config PG_USE_COPY YES \
+		-t_srs EPSG:3310 \
+		-nlt PROMOTE_TO_MULTI \
+		-nln CPAD_2015b \
+		-lco GEOMETRY_NAME=geom \
+		-lco SRID=3310 \
+		-f PGDump /vsistdout/ \
+		/vsizip/$(word 2,$^)/CPAD_2015b/CPAD_2015b_SuperUnits.shp | pv | psql -q
+
+db/cpad_superunits: db/cpad_2014
+	$(call create_relation)
+
+db/cpad_superunits_2015: db/cpad_2015
 	$(call create_relation)
 
 db/superunit_changes: db
@@ -212,12 +231,12 @@ db/foursquare_regions: db/CDB_RectangleGrid db/cpad_superunits
 ### Instagram database tables #########
 #######################################
 
-db/instagram: db/cpad_superunits db/instagram_regions db/instagram_photos
+db/instagram: db/cpad_superunits_2015 db/instagram_regions db/instagram_photos
 
 db/instagram_photos: db
 	$(call create_relation)
 
-db/instagram_regions: db/cpad_superunits db/GetIntersectingHexagons
+db/instagram_regions: db/cpad_superunits_2015 db/GetIntersectingHexagons
 	$(call create_relation)
 
 .PHONY: migration/%

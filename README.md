@@ -11,7 +11,7 @@ We are collecting all geocoded tweets, flickr photos, instagram photos, and four
 the boundaries of every open space listed in the [California Protected Areas Database (CPAD)](http://calands.org), specifically
 the CPAD "superunits". In this document "parks" and "open spaces" are used interchangeably, but we really mean "superunits".
 
-Getting Started Locally
+Getting started locally
 =============================
 The following steps have only been tested on Mac and Debian-based systems ;-)
 

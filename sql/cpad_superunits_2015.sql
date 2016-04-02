@@ -1,7 +1,7 @@
 DROP VIEW IF EXISTS cpad_superunits;
 CREATE VIEW cpad_superunits AS
   SELECT
-    suid_nma AS superunit_id,
+    suid_nma AS unit_id,
     park_name AS unit_name,
     access_typ,
     mng_ag_id as manager_id,

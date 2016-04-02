@@ -67,9 +67,6 @@ endef
 DATABASE_URL:
 	@test "${$@}" || (echo "$@ is undefined" && false)
 
-TRANSFORM_EPSG_SRS_ID:
-	@test "${$@}" || (echo "$@ is undefined" && false)
-
 TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH:
 	@test "${$@}" || (echo "$@ is undefined" && false)
 
@@ -120,7 +117,7 @@ flickr: db/flickr deps/foreman
 foursquare_venues: db/foursquare deps/foreman
 	foreman run foursquare_venues
 
-instagram: db/instagram deps/foreman
+instagram: db/instagram_cpad deps/foreman
 	foreman run instagram
 
 deps/foreman:
@@ -178,17 +175,17 @@ db/cpad_2014b7: db/postgis data/cpad_2014b7_superunits_name_manager_access.zip d
 
 db/CPAD_2015b: data/CPAD_2015b_superunits_name_manager_access.zip CPAD_2015b_defaults db/load_data
 
-db/load_data: TRANSFORM_EPSG_SRS_ID TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv deps/npm
+db/load_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv deps/npm
 	@psql -c "\d $(DEFAULT_SUPERUNIT_TABLENAME)" > /dev/null 2>&1 || \
 	$(if $(findstring .zip, $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
 	    $(eval TARGET := /vsizip/$(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
 	    $(eval TARGET := $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH))) \
 	ogr2ogr --config PG_USE_COPY YES \
-		-t_srs EPSG:$(TRANSFORM_EPSG_SRS_ID) \
+		-t_srs EPSG:4326 \
 		-nlt PROMOTE_TO_MULTI \
 		-nln $(DEFAULT_SUPERUNIT_TABLENAME) \
 		-lco GEOMETRY_NAME=geom \
-		-lco SRID=$(TRANSFORM_EPSG_SRS_ID) \
+		-lco SRID=4326 \
 		-overwrite \
 		-f PGDump /vsistdout/ $(TARGET) | pv | psql -q
 
@@ -248,7 +245,7 @@ db/foursquare_regions: db/CDB_RectangleGrid db/cpad_superunits
 #######################################
 db/instagram_generic: db/load_data db/instagram_regions db/instagram_photos
 
-db/instagram: db/cpad_superunits_2015 db/instagram_regions db/instagram_photos
+db/instagram_cpad: db/cpad_superunits_2015 db/instagram_regions db/instagram_photos
 
 db/instagram_photos: db
 	$(call create_relation)

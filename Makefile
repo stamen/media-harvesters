@@ -143,6 +143,11 @@ data/cpad_2014b7_superunits_name_manager_access.zip:
 	mkdir -p $$(dirname $@)
 	curl -sLf http://websites.greeninfo.org/common_data/California/Public_Lands/CPAD/dev/CPAD2014b/cpad_2014b7_superunits_name_manager_access.zip -o $@
 
+export DEFAULT_SUPERUNIT_TABLENAME = superunits
+CPAD_2015b_defaults:
+	$(eval DEFAULT_SUPERUNIT_TABLENAME := $(word 1,$(subst _defaults,,$@)))
+	$(eval TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH := data/CPAD_2015b_superunits_name_manager_access.zip/CPAD_2015b/CPAD_2015b_SuperUnits.shp)
+
 data/CPAD_2015b_superunits_name_manager_access.zip:
 	mkdir -p $$(dirname $@)
 	curl -sLf http://atlas.ca.gov/casil/planning/Land_Ownership/GreenInfoNetworkProject/CPAD-2015b-December2015/CPAD_2015b.zip -o $@
@@ -171,17 +176,17 @@ db/cpad_2014b7: db/postgis data/cpad_2014b7_superunits_name_manager_access.zip d
 		-f PGDump /vsistdout/ \
 		/vsizip/$(word 2,$^)/cpad_2014b7_superunits_name_manager_access.shp | pv | psql -q
 
-db/CPAD_2015b: data/CPAD_2015b_superunits_name_manager_access.zip db/load_data
+db/CPAD_2015b: data/CPAD_2015b_superunits_name_manager_access.zip CPAD_2015b_defaults db/load_data
 
 db/load_data: TRANSFORM_EPSG_SRS_ID TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv deps/npm
-	@psql -c "\d superunits" > /dev/null 2>&1 || \
+	@psql -c "\d $(DEFAULT_SUPERUNIT_TABLENAME)" > /dev/null 2>&1 || \
 	$(if $(findstring .zip, $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
 	    $(eval TARGET := /vsizip/$(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
 	    $(eval TARGET := $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH))) \
 	ogr2ogr --config PG_USE_COPY YES \
 		-t_srs EPSG:$(TRANSFORM_EPSG_SRS_ID) \
 		-nlt PROMOTE_TO_MULTI \
-		-nln superunits \
+		-nln $(DEFAULT_SUPERUNIT_TABLENAME) \
 		-lco GEOMETRY_NAME=geom \
 		-lco SRID=$(TRANSFORM_EPSG_SRS_ID) \
 		-overwrite \

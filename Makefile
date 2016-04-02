@@ -246,13 +246,14 @@ db/foursquare_regions: db/CDB_RectangleGrid db/cpad_superunits
 #######################################
 ### Instagram database tables #########
 #######################################
+db/instagram_generic: db/load_data db/instagram_regions db/instagram_photos
 
 db/instagram: db/cpad_superunits_2015 db/instagram_regions db/instagram_photos
 
 db/instagram_photos: db
 	$(call create_relation)
 
-db/instagram_regions: db/cpad_superunits_2015 db/GetIntersectingHexagons
+db/instagram_regions: db/GetIntersectingHexagons
 	$(call create_relation)
 
 .PHONY: migration/%

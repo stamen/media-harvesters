@@ -67,6 +67,12 @@ endef
 DATABASE_URL:
 	@test "${$@}" || (echo "$@ is undefined" && false)
 
+TRANSFORM_EPSG_SRS_ID:
+	@test "${$@}" || (echo "$@ is undefined" && false)
+
+TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH:
+	@test "${$@}" || (echo "$@ is undefined" && false)
+
 #######################################
 ### Twitter stuff #####################
 #######################################
@@ -165,16 +171,21 @@ db/cpad_2014b7: db/postgis data/cpad_2014b7_superunits_name_manager_access.zip d
 		-f PGDump /vsistdout/ \
 		/vsizip/$(word 2,$^)/cpad_2014b7_superunits_name_manager_access.shp | pv | psql -q
 
-db/CPAD_2015b: db/postgis data/CPAD_2015b_superunits_name_manager_access.zip deps/gdal deps/pv deps/npm
-	@psql -c "\d CPAD_2015b" > /dev/null 2>&1 || \
+db/CPAD_2015b: data/CPAD_2015b_superunits_name_manager_access.zip db/load_data
+
+db/load_data: TRANSFORM_EPSG_SRS_ID TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv deps/npm
+	@psql -c "\d superunits" > /dev/null 2>&1 || \
+	$(if $(findstring .zip, $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
+	    $(eval TARGET := /vsizip/$(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
+	    $(eval TARGET := $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH))) \
 	ogr2ogr --config PG_USE_COPY YES \
-		-t_srs EPSG:3310 \
+		-t_srs EPSG:$(TRANSFORM_EPSG_SRS_ID) \
 		-nlt PROMOTE_TO_MULTI \
-		-nln CPAD_2015b \
+		-nln superunits \
 		-lco GEOMETRY_NAME=geom \
-		-lco SRID=3310 \
-		-f PGDump /vsistdout/ \
-		/vsizip/$(word 2,$^)/CPAD_2015b/CPAD_2015b_SuperUnits.shp | pv | psql -q
+		-lco SRID=$(TRANSFORM_EPSG_SRS_ID) \
+		-overwrite \
+		-f PGDump /vsistdout/ $(TARGET) | pv | psql -q
 
 db/cpad_superunits: db/cpad_2014
 	$(call create_relation)

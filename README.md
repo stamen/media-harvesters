@@ -54,7 +54,7 @@ Setting up the database tables
     ```
 
 0. Each harvester works with their own specific tables and a shared `superunits` table. For example, running the command
-`make db/instagram_cpad` would produce these output tables for CPAD areas:
+`make db/instagram_cpad` would produce these output tables for CPAD park areas:
 
     ```bash
     # a table of CPAD superunit polygon geometries from a download CPAD shapefile
@@ -66,14 +66,14 @@ Setting up the database tables
     # smaller hexagon geometries derived from the table `superunits` geometries
     instagram_reqions
 
-    # point geometries indicating the Lat/Lng of where Instagram photos were found
+    # point geometries indicating the (lng,lat) of where Instagram photos were found after running the harvesters
     instagram_photos
     ```
 
 0. Let's play with some sample data in this repository to setup custom park areas
 
-0. The `Makefile` command `db/instagram_generic` can load our own Shapefile and GeoJSON datasets into the `superunits` table
-( it can also load Shapefiles inside of zipfiles ). There are several datasets in this repository's `testdata/` directory. They include:
+0. The `Makefile` command `db/instagram_generic` can load our own Shapefile or GeoJSON datasets into the `superunits` table
+( it can also load a Shapefile inside a zipfile ). There are several datasets in this repository's `testdata/` directory. They include:
 
     ```bash
     # a GeoJSON file in WGS-84
@@ -131,10 +131,10 @@ this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` f
 Harvest Photos
 ------------------------------------------
 
-With the database setup, the next move is to query Flickr, Foursquare or Instagram for photos related to the park areas that were loaded.
-We can kick off these workers using `foreman` commands such as `$ foreman run instagram`. For future runs, note that the `foreman` harvester commands
-will automatically setup the required tables and load the data that we manually loaded with `make` commands in the last few steps. So you can solely
-rely on running them. Review the following harvester-specific sections for instructions on running each.
+With the database setup, the next move is to run the harvesters which query Flickr, Foursquare or Instagram for photos related to the park areas that were loaded.
+We can kick off these harvesters using `foreman` commands such as `$ foreman run instagram`. For future consideration, note that the `foreman` harvester commands
+will automatically run the table creation and loading `make` commands that we manually called in the last few steps. So you can
+rely on only running `foreman` from now on. Review the following harvester-specific sections for instructions on running each.
 
 Foursquare harvesting
 =======================

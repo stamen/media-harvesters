@@ -1,5 +1,5 @@
-DROP VIEW IF EXISTS cpad_superunits;
-CREATE VIEW cpad_superunits AS
+DROP VIEW IF EXISTS superunits;
+CREATE VIEW superunits AS
   SELECT
     suid_nma AS unit_id,
     park_name AS unit_name,

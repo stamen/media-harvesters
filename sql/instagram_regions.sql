@@ -19,5 +19,5 @@ INSERT INTO instagram_regions (center, radius, geom)
     geom
   FROM (
     SELECT GetIntersectingHexagons(ST_SetSRID(ST_Extent(geom), 3310), 5000) geom
-    FROM cpad_superunits
+    FROM superunits
   ) AS _;

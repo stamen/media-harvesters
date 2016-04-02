@@ -13,8 +13,8 @@ BEGIN
       RAISE NOTICE 'checked %', i;
     END IF;
 
-    PERFORM superunit_id
-    FROM cpad_superunits
+    PERFORM unit_it
+    FROM superunits
     WHERE ST_DWithin(geom, ST_Centroid(hex), radius);
 
     IF FOUND THEN

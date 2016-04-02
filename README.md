@@ -16,9 +16,7 @@ Getting Started Locally
 
 Setting up environment variables
 -------------------------------------------
-0. The application uses `foreman` and `make` to execute commands. Both use environment variables from the `.env` in this directory
-
-0. Copy the `sample.env` to an `.env` file and fill it out appropriately. Some of these environment variables are harvester specific.
+0. The application uses `foreman` and `make` to execute commands. Both use environment variables from the `.env` in the root directory. Copy the `sample.env` to an `.env` file and fill it out appropriately. Some of these environment variables are harvester specific.
 The `Makefile` requires a couple as noted below. The expected values for these variables will be talked about at different points in
 the directions below in case you're unsure how to fill them out right now:
 

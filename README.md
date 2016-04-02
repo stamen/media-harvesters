@@ -26,6 +26,7 @@ Setting up environment variables
 The `Makefile` requires a couple as noted below. The expected values for these variables will be talked about at different points in
 the directions below in case you're unsure how to fill them out right now:
 
+    ```bash
 	DATABASE_URL=postgres://username@hostname:port/dbname # required
     TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH=YOURPATHHERE # required
     FLICKR_CLIENT_ID=YOURCLIENTIDHERE
@@ -35,6 +36,7 @@ the directions below in case you're unsure how to fill them out right now:
     INSTAGRAM_CLIENT_ID=YOURCLIENTIDHERE
     INSTAGRAM_CLIENT_SECRET=YOURCLIENTSECRETHERE
     INSTAGRAM_ACCESS_TOKEN=YOURACCESSTOKENHERE
+    ```
 
 
 Setting up the database tables
@@ -49,14 +51,17 @@ Setting up the database tables
 
 0. Make sure the `DATABASE_URL` environment variable is filled out, it's required by the `Makefile`:
 
+    ```bash
     # currently the command to create the database defaults
     # to creating a database named after the user running the command
     # so the connection string `postgres://username@hostname:port/dbname` becomes
     DATABASE_URL=postgres://rancho@localhost:5432/rancho
+    ```
 
 0. Each harvester works with their own specific tables and a shared `superunits` table. For example, running the command
 `make db/instagram_cpad` would produce these output tables for CPAD areas:
 
+    ```bash
     # a table of CPAD superunit polygon geometries from a download CPAD shapefile
     cpad_2015b
 
@@ -68,12 +73,14 @@ Setting up the database tables
 
     # point geometries indicating the Lat/Lng of where Instagram photos were found
     instagram_photos
+    ```
 
 0. Let's play with some sample data in this repository to setup custom park areas
 
 0. The `Makefile` command `db/instagram_generic` can load our own Shapefile and GeoJSON datasets into the `superunits` table
 ( it can also load Shapefiles inside of zipfiles ). There are several datasets in this repository's `testdata/` directory. They include:
 
+    ```bash
     # a GeoJSON file in WGS-84
     test.json
 
@@ -89,13 +96,15 @@ Setting up the database tables
     # called `test_epsg_3310.shp` in a `subfolders/` directory
     # in a California Albers
     test_epsg_3310_in_subfolder.zip
-
+    ```
 
 0. Pick one dataset from `testdata/` and copy the absolute path to it. Because it has the most complicated path,
 this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` file with the absolute path:
 
+    ```bash
     # note the full path to the Shapefile includes the child folder
     TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH=/usr/local/src/dev/harvester/testdata/test_epsg_3310_in_subfolder.zip/subfolders/test_epsg_3310.shp
+    ```
 
 0. Change to the root harvester directory, the one with the `Makefile` in it
 
@@ -107,6 +116,7 @@ this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` f
 
 0. Here's the intended output tables and data we care about:
 
+    ```bash
     $ psql -c "\d"
                    List of relations
      Schema |           Name           |   Type   | Owner
@@ -121,7 +131,7 @@ this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` f
     -------
         85
     (1 row)
-
+    ```
 
 Harvest Photos
 ------------------------------------------

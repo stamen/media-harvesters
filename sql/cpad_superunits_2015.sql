@@ -1,5 +1,5 @@
-DROP VIEW IF EXISTS superunits;
-CREATE VIEW superunits AS
+DROP TABLE IF EXISTS superunits;
+CREATE TABLE superunits AS
   SELECT
     suid_nma AS unit_id,
     park_name AS unit_name,

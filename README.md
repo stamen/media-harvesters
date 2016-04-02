@@ -13,6 +13,7 @@ the CPAD "superunits". In this document "parks" and "open spaces" are used inter
 
 Getting Started Locally
 =============================
+The following steps have only been tested on Mac and Debian-based systems ;-)
 
 Setting up environment variables
 -------------------------------------------

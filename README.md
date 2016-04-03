@@ -4,16 +4,18 @@ Mapping social media activity in parks and other open spaces. This repository co
 media harvesters. Most of this code has been copied over from the [local-harvester branch](https://github.com/stamen/parks.stamen.com/tree/local-harvester) of the repository.
 These harvesters collect geotagged content from Flickr, Foursquare, and Instagram. (currently Twitter is handled using a separate codebase)
 
-=======
-  * [More about the project](#more-about-the-project)
-  * [Getting started locally](#getting-started-locally)
-    * [Setting up environment variables](#setting-up-environment-variables)
-    * [Setting up the database tables](#setting-up-the-database-tables)
-    * [Harvesting Photos](#harvesting-photos)
-  * [Foursquare harvesting](#foursquare-harvesting)
-  * [Flickr harvesting](#flickr-harvesting)
-  * [Instagram harvesting](#instagram-harvesting)
-  * [About the algorithms](#about-the-algorithms)
+  * [About the Project](#about-the-project)
+  * [Getting Started Locally](#getting-started-locally)
+    * [overview of environment variables](#overview-of-environment-variables)
+    * [overview of the database tables](#overview-of-the-database-tables)
+    * [harvest ye photos](#harvest-ye-photos)
+  * [Setting Up CPAD Superunits DB](#setting-up-cpad-superunits-db)
+  * [Setting Up Custom Shapefiles and GeoJSON DB](#setting-up-custom-shapefiles-and-geojson-db)
+  * [Foursquare Harvesting](#foursquare-harvesting)
+  * [Flickr Harvesting](#flickr-harvesting)
+  * [Instagram Harvesting](#instagram-harvesting)
+  * [About the Algorithms](#about-the-algorithms)
+
 
 About the Project
 =======================
@@ -22,10 +24,10 @@ the boundaries of every open space listed in the [California Protected Areas Dat
 the CPAD "superunits". In this document "parks" and "open spaces" are used interchangeably, but we really mean "superunits".
 
 Getting Started Locally
-=============================
+=======================
 The following steps have only been run on Mac and Debian-based systems
 
-Setting up environment variables
+overview of environment variables
 -------------------------------------------
 0. The application uses `foreman` and `make` to execute commands. Both use environment variables from the `.env`
 in the root directory. Copy the `sample.env` to an `.env` file and fill it out appropriately. Some of these environment variables are harvester specific.
@@ -42,8 +44,7 @@ the following directions in case you're unsure how to fill them out right now:
     INSTAGRAM_ACCESS_TOKEN=YOURACCESSTOKENHERE
     ```
 
-
-Setting up the database tables
+overview of the database tables
 --------------------------------
 0. Install `PostgreSQL 9.x` and `PostGIS 2.x` onto your developer system
 
@@ -62,8 +63,9 @@ Setting up the database tables
     DATABASE_URL=postgres://rancho@localhost:5432/rancho
     ```
 
-0. Each harvester works with their own specific tables and a shared `superunits` table. For example, running the command
-`make db/instagram_cpad` would produce these output tables for CPAD park areas:
+0. Each harvester works with their own specific tables and a shared `superunits` table. For example, the output tables
+that are generated to run the Instagram harvester for CPAD park areas are listed below. For more information about
+setting up the CPAD database read the section [Setting Up CPAD Superunits DB](#setting-up-cpad-superunits-db)
 
     ```bash
     # a table of CPAD superunit polygon geometries from a download CPAD shapefile
@@ -79,7 +81,33 @@ Setting up the database tables
     instagram_photos
     ```
 
-0. Let's play with some sample data in this repository to setup custom park areas
+0. Let's play with some sample data in this repository to setup custom park areas based on our own datasets.
+Read the section [Setting Up Custom Shapefiles and GeoJSON](#setting-up-custom-shapefiles-and-geojson-db)
+
+0. Move on to the [Harvesting Photos Section](#harvesting-photos)
+
+harvest ye photos
+------------------------------------------
+With the database setup, the next move is to run the Node.js harvesters which query Flickr, Foursquare or Instagram for photos related to the park areas that were loaded.
+We can kick off these harvesters using `foreman` commands such as `$ foreman run instagram`. For future consideration, note that the `foreman` harvester commands
+will automatically run the table creation and loading `make` commands that we manually called [Getting Started Locally](#getting-started-locally) above. So you can
+rely on only running `foreman` from now on. Review the harvester-specific sections [Foursquare Harvesting](#foursquare-harvesting),
+[Flickr Harvesting](#flickr-harvesting), [Instagram Harvesting](#instagram-harvesting) for instructions on running each
+
+
+Setting Up CPAD Superunits DB
+==============================
+If you want to use CPAD park geometries to seed the database then all you have to do is run this command for the appropriate harvester.
+Here we are setting up CPAD geometries for an Instagram harvester:
+
+```bash
+make db/instagram_cpad
+```
+
+
+Setting Up Custom Shapefiles and GeoJSON DB
+============================================
+Use your own park geometries to seed the database and influence where the harvesters collect social media. Let's play with some sample data in this repository to setup custom park areas
 
 0. The `Makefile` command `db/instagram_generic` can load our own Shapefile or GeoJSON datasets into the `superunits` table
 ( it can also load a Shapefile inside a zipfile ). There are several datasets in this repository's `testdata/` directory. They include:
@@ -136,15 +164,6 @@ this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` f
         85
     (1 row)
     ```
-0. Move on to the [Harvesting Photos](#
-
-Harvesting photos
-------------------------------------------
-
-With the database setup, the next move is to run the harvesters which query Flickr, Foursquare or Instagram for photos related to the park areas that were loaded.
-We can kick off these harvesters using `foreman` commands such as `$ foreman run instagram`. For future consideration, note that the `foreman` harvester commands
-will automatically run the table creation and loading `make` commands that we manually called in the last few steps. So you can
-rely on only running `foreman` from now on. Review the following harvester-specific sections for instructions on running each.
 
 Foursquare Harvesting
 =======================

@@ -219,13 +219,14 @@ db/GetIntersectingHexagons: db/CDB_HexagonGrid
 #######################################
 ### Flickr database tables ############
 #######################################
+db/flickr_custom: db/load_data db/flickr_photos db/flickr_regions
 
-db/flickr: db/flickr_photos db/flickr_regions db/cpad_superunits
+db/flickr_cpad: db/cpad_superunits_2015 db/flickr_photos db/flickr_regions
 
 db/flickr_photos: db
 	$(call create_relation)
 
-db/flickr_regions: db/CDB_RectangleGrid db/cpad_superunits
+db/flickr_regions: db/CDB_RectangleGrid
 	$(call create_relation)
 
 #######################################
@@ -243,7 +244,7 @@ db/foursquare_regions: db/CDB_RectangleGrid db/cpad_superunits
 #######################################
 ### Instagram database tables #########
 #######################################
-db/instagram_generic: db/load_data db/instagram_regions db/instagram_photos
+db/instagram_custom: db/load_data db/instagram_regions db/instagram_photos
 
 db/instagram_cpad: db/cpad_superunits_2015 db/instagram_regions db/instagram_photos
 

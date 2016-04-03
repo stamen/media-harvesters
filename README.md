@@ -103,10 +103,11 @@ rely on only running `foreman` from now on. Review the harvester-specific sectio
 Setting Up CPAD Superunits DB
 ==============================
 If you want to use CPAD park geometries to seed the database then all you have to do is run this command for the appropriate harvester.
-Here we are setting up CPAD geometries for an Instagram harvester:
+Here we are setting up CPAD geometries for an Instagram harvester or Flickr harvester:
 
 ```bash
 make db/instagram_cpad
+make db/flickr_cpad
 ```
 
 
@@ -114,7 +115,7 @@ Setting Up Custom Shapefiles and GeoJSON DB
 ============================================
 Use your own park geometries to seed the database and influence where the harvesters collect social media. Let's play with some sample data in this repository to setup custom park areas
 
-0. The `Makefile` command `db/instagram_generic` can load our own Shapefile or GeoJSON datasets into the `superunits` table
+0. The `Makefile` command `db/instagram_custom` can load our own Shapefile or GeoJSON datasets into the `superunits` table
 ( it can also load a Shapefile inside a zipfile ). There are several datasets in this repository's `testdata/` directory. They include:
 
     ```bash
@@ -145,10 +146,11 @@ this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` f
 
 0. Change to the root harvester directory, the one with the `Makefile` in it
 
-0. Load the dataset and create the required Instagram tables:
+0. Now load the dataset and create the required tables for the harvester you want. Here we are preparing the
+database for Instagram where `db/flickr_custom` would be for Flickr:
 
     ```bash
-    $ make db/instagram_generic
+    $ make db/instagram_custom
     ```
 
 0. Here's the intended output tables and data we care about:
@@ -184,16 +186,26 @@ Locally: `foreman run foursquare_update`
 
 Flickr Harvesting
 ===================
-*	Command-line node app queries Flickr API for bounding box of each park. To run locally: `foreman run flickr`
-*	Node.js app saves harvested photos to the table `flickr_photos`
-*	Then `make flickrParkTable` uniquifies the table, and inserts the results into `park_flickr_photos`
+0. If you don't have one, go sign up for a Flickr account and
+then [register the harvester application ](https://www.flickr.com/services/apps/create/apply/). Registering the application should
+generate a `Key` and `Secret` that you'll want save in the `.env` file as:
+
+    ```bash
+    FLICKR_CLIENT_ID=12412523erwty7654598 # key
+    FLICKR_CLIENT_SECRET=12412523erwty7654598
+    ```
+0. The harvester is all setup to run against Flickr. Change to the root harvester directory, the one with the `Makefile` in it.
+To run locally type `foreman run flickr`. The CLI node app queries the Flickr API for bounding box of each park.
+
+0. The app saves harvested photos to the table `flickr_photos`
+
 
 Instagram Harvesting
 =======================
 0. In late 2015 Instagram started requiring an `access_token` for API requests. If you don't have one, go sign up for an Instagram account and
-then [register the harvester](https://www.instagram.com/developer/clients/manage/). Registering your application should
-generate a `Cliend ID` and `Client Secret` that you'll want save for later. The instructions below are a summary of those found on
-[Instagram](https://www.instagram.com/developer/authentication/):
+then [register the harvester application](https://www.instagram.com/developer/clients/manage/). Registering the application should
+generate a `Client ID` and `Client Secret` that you'll want save for later. The instructions below are a summary of those found on
+[Instagram](https://www.instagram.com/developer/authentication/)
 
 0. Now authorize the harvester we registered to make requests on behalf of your Instagram account placing this URL into your browser.
 Note: the `redirect_uri` has to match the `redirect_uri` you specified in the registration form. Likewise, `client_id` should match your
@@ -217,7 +229,7 @@ might look like if your `redirect_uri` was registered as `localhost`:
     INSTAGRAM_ACCESS_TOKEN=1234456.1234567.13423546766708
     ```
 0. The harvester is all setup to run against Instagram. Change to the root harvester directory, the one with the `Makefile` in it.
-To run locally type `foreman run instagram`. The CLI node app queries Instagram API for an array of circles covering each park.
+To run locally type `foreman run instagram`. The CLI node app queries the Instagram API for an array of circles covering each park.
 
 0. The app saves harvested photos to the table `instagram_photos`
 

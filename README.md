@@ -1,9 +1,8 @@
 Park Social Media Harvesters - www.caliparks.org
 ==================================================
-Mapping social media activity in parks and other open spaces. This repository contains the Heroku-based node.js social
+Mapping social media activity in parks and other open spaces. This repository contains the Heroku-based Node.js social
 media harvesters. Most of this code has been copied over from the [local-harvester branch](https://github.com/stamen/parks.stamen.com/tree/local-harvester) of the repository.
 These harvesters collect geotagged content from Flickr, Foursquare, and Instagram. (currently Twitter is handled using a separate codebase).
-
 =======
   * [More about the project](#more-about-the-project)
   * [Getting started locally](#getting-started-locally)
@@ -15,21 +14,21 @@ These harvesters collect geotagged content from Flickr, Foursquare, and Instagra
   * [Instagram harvesting](#instagram-harvesting)
   * [About the algorithms](#about-the-algorithms)
 
-More about the project
-=====================
-
+About the Project
+=======================
 We are collecting all geocoded tweets, flickr photos, instagram photos, and foursquare venues (and check-in counts) within
 the boundaries of every open space listed in the [California Protected Areas Database (CPAD)](http://calands.org), specifically
 the CPAD "superunits". In this document "parks" and "open spaces" are used interchangeably, but we really mean "superunits".
 
-Getting started locally
+Getting Started Locally
 =============================
-The following steps have only been tested on Mac and Debian-based systems ;-)
+The following steps have only been run on Mac and Debian-based systems
 
 Setting up environment variables
 -------------------------------------------
-0. The application uses `foreman` and `make` to execute commands. Both use environment variables from the `.env` in the root directory. Copy the `sample.env` to an `.env` file and fill it out appropriately. Some of these environment variables are harvester specific.
-The `Makefile` requires a couple as noted below. The expected values for these variables will be talked further in
+0. The application uses `foreman` and `make` to execute commands. Both use environment variables from the `.env`
+in the root directory. Copy the `sample.env` to an `.env` file and fill it out appropriately. Some of these environment variables are harvester specific.
+The `Makefile` requires a couple variables, as noted below. The expected values for these variables will be talked about in
 the following directions in case you're unsure how to fill them out right now:
 
     ```bash
@@ -138,7 +137,7 @@ this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` f
     ```
 0. Move on to the [Harvesting Photos](#
 
-Harvesting Photos
+Harvesting photos
 ------------------------------------------
 
 With the database setup, the next move is to run the harvesters which query Flickr, Foursquare or Instagram for photos related to the park areas that were loaded.
@@ -146,7 +145,7 @@ We can kick off these harvesters using `foreman` commands such as `$ foreman run
 will automatically run the table creation and loading `make` commands that we manually called in the last few steps. So you can
 rely on only running `foreman` from now on. Review the following harvester-specific sections for instructions on running each.
 
-Foursquare harvesting
+Foursquare Harvesting
 =======================
 Harvesting the venues the first time (determining the existence of venues in each park) is the hard part. This should be re-run periodically to catch any new venues that appear. [more details needed here]
 
@@ -158,13 +157,13 @@ To update the checkin counts for already-harvested venues:
 
 Locally: `foreman run foursquare_update`
 
-Flickr harvesting
+Flickr Harvesting
 ===================
 *	Command-line node app queries Flickr API for bounding box of each park. To run locally: `foreman run flickr`
-*	Node app saves harvested photos to the table `flickr_photos`
+*	Node.js app saves harvested photos to the table `flickr_photos`
 *	Then `make flickrParkTable` uniquifies the table, and inserts the results into `park_flickr_photos`
 
-Instagram harvesting
+Instagram Harvesting
 =======================
 0. In late 2015 Instagram started requiring an `access_token` for API requests. If you don't have one, go sign up for an Instagram account and
 then [register the harvester](https://www.instagram.com/developer/clients/manage/). Registering your application should
@@ -197,7 +196,7 @@ To run locally type `foreman run instagram`. The CLI node app queries Instagram 
 
 0. The app saves harvested photos to the table `instagram_photos`
 
-About the algorithms
+About the Algorithms
 ======================
 
 Add more here (including screenshots).

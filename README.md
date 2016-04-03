@@ -121,12 +121,12 @@ Use your own park geometries to seed the database and influence where the harves
 
     # a zipfile that contains a Shapefile
     # called `test_epsg_3310.shp` in the root directory
-    # in a California Albers
+    # in California Albers
     test_epsg_3310.zip
 
     # a zipfile that contains a Shapefile
     # called `test_epsg_3310.shp` in a `subfolders/` directory
-    # in a California Albers
+    # in California Albers
     test_epsg_3310_in_subfolder.zip
     ```
 

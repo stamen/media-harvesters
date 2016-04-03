@@ -4,7 +4,6 @@ Mapping social media activity in parks and other open spaces. This repository co
 media harvesters. Most of this code has been copied over from the [local-harvester branch](https://github.com/stamen/parks.stamen.com/tree/local-harvester) of the repository.
 These harvesters collect geotagged content from Flickr, Foursquare, and Instagram. (currently Twitter is handled using a separate codebase).
 
-Index
 =======
   * [More about the project](#more-about-the-project)
   * [Getting started locally](#getting-started-locally)

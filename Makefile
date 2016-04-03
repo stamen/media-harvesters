@@ -114,7 +114,10 @@ parkTotals:
 flickr: db/flickr deps/foreman
 	foreman run flickr
 
-foursquare_venues: db/foursquare deps/foreman
+foursquare_venues_cpad: db/foursquare_cpad deps/foreman
+	foreman run foursquare_venues
+
+foursquare_venues_custom: db/foursquare_custom deps/foreman
 	foreman run foursquare_venues
 
 instagram: db/instagram_cpad deps/foreman
@@ -232,13 +235,14 @@ db/flickr_regions: db/CDB_RectangleGrid
 #######################################
 ### Foursquare database tables ########
 #######################################
+db/foursquare_custom: db/load_data db/foursquare_venues db/foursquare_regions
 
-db/foursquare: db/foursquare_venues db/foursquare_regions db/cpad_superunits
+db/foursquare_cpad: db/cpad_superunits_2015 db/foursquare_venues db/foursquare_regions
 
 db/foursquare_venues: db
 	$(call create_relation)
 
-db/foursquare_regions: db/CDB_RectangleGrid db/cpad_superunits
+db/foursquare_regions: db/CDB_RectangleGrid
 	$(call create_relation)
 
 #######################################

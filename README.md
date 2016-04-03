@@ -174,21 +174,37 @@ database for Instagram where `db/flickr_custom` would be for Flickr:
 
 Foursquare Harvesting
 =======================
-Harvesting the venues the first time (determining the existence of venues in each park) is the hard part. This should be re-run periodically to catch any new venues that appear. [more details needed here]
+0. If you don't have one, go sign up for a Foursquare account and
+then [register the harvester application ](https://foursquare.com/developers/apps). Registering the application should
+generate a `Client Id` and `Client Secret` that you'll want to save in the `.env` file as:
 
-To collect venues the first time: 
+    ```bash
+    FOURSQUARE_CLIENT_ID=12412523erwty7654598 # key
+    FOURSQUARE_CLIENT_SECRET=12412523erwty7654598
+    ```
+0. The harvester is all setup to run against Foursquare. Change to the root harvester directory, the one with the `Makefile` in it.
 
-Locally: `foreman run foursquare_venues`
+0. Harvesting the venues the first time (determining the existence of venues in each park) is the hard part.
+This should be re-run periodically to catch any new venues that appear (more to come later). To collect venues the first time run:
 
-To update the checkin counts for already-harvested venues:
+    ```bash
+    $ foreman run foursquare_venues
+    ```
 
-Locally: `foreman run foursquare_update`
+0. To update the checkin counts for already-harvested venues run:
+
+    ```bash
+    $ foreman run foursquare_update
+    ```
+
+0. The app saves harvested photos to the table `foursquare_venues`
+
 
 Flickr Harvesting
 ===================
 0. If you don't have one, go sign up for a Flickr account and
 then [register the harvester application ](https://www.flickr.com/services/apps/create/apply/). Registering the application should
-generate a `Key` and `Secret` that you'll want save in the `.env` file as:
+generate a `Key` and `Secret` that you'll want to save in the `.env` file as:
 
     ```bash
     FLICKR_CLIENT_ID=12412523erwty7654598 # key
@@ -204,7 +220,7 @@ Instagram Harvesting
 =======================
 0. In late 2015 Instagram started requiring an `access_token` for API requests. If you don't have one, go sign up for an Instagram account and
 then [register the harvester application](https://www.instagram.com/developer/clients/manage/). Registering the application should
-generate a `Client ID` and `Client Secret` that you'll want save for later. The instructions below are a summary of those found on
+generate a `Client ID` and `Client Secret` that you'll want to save for later. The instructions below are a summary of those found on
 [Instagram](https://www.instagram.com/developer/authentication/)
 
 0. Now authorize the harvester we registered to make requests on behalf of your Instagram account placing this URL into your browser.

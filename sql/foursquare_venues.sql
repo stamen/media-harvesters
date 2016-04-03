@@ -2,23 +2,23 @@ DROP TABLE IF EXISTS foursquare_venues;
 CREATE TABLE foursquare_venues (
   id serial PRIMARY KEY,
   venue_id varchar(80),
-  superunit_id int NOT NULL,
+  unit_id int NOT NULL,
   metadata json,
   geom geometry(Point, 4326)
 );
 
 CREATE INDEX foursquare_venues_geom_gist ON foursquare_venues USING GIST(geom);
-CREATE INDEX foursquare_venues_superunit_id_idx ON foursquare_venues(superunit_id);
+CREATE INDEX foursquare_venues_unit_id_idx ON foursquare_venues(unit_id);
 
 CREATE OR REPLACE FUNCTION update_foursquare_venues() RETURNS TRIGGER AS $$
   BEGIN
-    IF (TG_OP = 'INSERT' AND NEW.superunit_id IS NULL) THEN
+    IF (TG_OP = 'INSERT' AND NEW.unit_id IS NULL) THEN
       -- check intersection on INSERT
-      NEW.superunit_id := (SELECT superunit_id
-        FROM cpad_superunits cpad
+      NEW.unit_id := (SELECT unit_id
+        FROM superunits cpad
         WHERE ST_Intersects(ST_Transform(NEW.geom, ST_SRID(cpad.geom)), cpad.geom));
 
-      IF NEW.superunit_id IS NULL THEN
+      IF NEW.unit_id IS NULL THEN
         RETURN NULL; -- don't insert
       END IF;
 

@@ -7,7 +7,7 @@ These harvesters collect geotagged content from Flickr, Foursquare, and Instagra
   * [About the Project](#about-the-project)
   * [Getting Started Locally](#getting-started-locally)
     * [overview of environment variables](#overview-of-environment-variables)
-    * [overview of the database tables](#overview-of-the-database-tables)
+    * [overview of the database setup](#overview-of-the-database-tables)
     * [harvest ye photos](#harvest-ye-photos)
   * [Setting Up CPAD Superunits DB](#setting-up-cpad-superunits-db)
   * [Setting Up Custom Shapefiles and GeoJSON DB](#setting-up-custom-shapefiles-and-geojson-db)
@@ -43,7 +43,7 @@ the expected values if you're unsure how to fill them out right now:
     INSTAGRAM_ACCESS_TOKEN=YOURACCESSTOKENHERE
     ```
 
-overview of the database tables
+overview of the database setup
 --------------------------------
 0. Install `PostgreSQL 9.x` and `PostGIS 2.x` onto your developer system
 
@@ -90,14 +90,10 @@ harvest ye photos
 With the database setup, the next step is to run the Node.js harvesters which query Flickr, Foursquare or Instagram for photos related to the loaded park areas.
 We can kick off these harvesters using `foreman` commands such as:
 
-    ```bash
     $ foreman run instagram
-    ```
 
-For future consideration, note that the `foreman` harvester commands
-will run the table creation and loading `make` commands that we manually called in [Getting Started Locally](#getting-started-locally) above. So you can
-rely on only running `foreman` from now on. Review the harvester-specific sections [Foursquare Harvesting](#foursquare-harvesting),
-[Flickr Harvesting](#flickr-harvesting), [Instagram Harvesting](#instagram-harvesting) for instructions on running each
+Review the harvester-specific sections [Foursquare Harvesting](#foursquare-harvesting),
+[Flickr Harvesting](#flickr-harvesting), and [Instagram Harvesting](#instagram-harvesting) for instructions on running each
 
 
 Setting Up CPAD Superunits DB

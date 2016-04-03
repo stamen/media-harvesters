@@ -30,8 +30,8 @@ The following steps have been tested on Mac and Debian systems
 overview of environment variables
 -------------------------------------------
 0. The application uses `foreman` and `make` to execute commands. Both use environment variables from the `.env` file
-in the root directory. Copy the `sample.env` to an `.env` file and fill it out appropriately. The expected values will be talked about in
-the following directions if you're unsure how to fill them out right now:
+in the root directory. Copy the `sample.env` to an `.env` file and fill it out. In various spots the directions talk about
+the expected values if you're unsure how to fill them out right now:
 
     ```bash
 	DATABASE_URL=postgres://username@hostname:port/dbname # required

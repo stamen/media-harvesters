@@ -30,13 +30,12 @@ The following steps have only been run on Mac and Debian-based systems
 overview of environment variables
 -------------------------------------------
 0. The application uses `foreman` and `make` to execute commands. Both use environment variables from the `.env` file
-in the root directory. Copy the `sample.env` to an `.env` file and fill it out appropriately. Some of these environment variables are harvester specific.
-The `Makefile` requires a couple variables, as noted below. The expected values for these variables will be talked about in
-the following directions in case you're unsure how to fill them out right now:
+in the root directory. Copy the `sample.env` to an `.env` file and fill it out appropriately. The expected values will be talked about in
+the following directions if you're unsure how to fill them out right now:
 
     ```bash
 	DATABASE_URL=postgres://username@hostname:port/dbname # required
-    TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH=YOURPATHHERE # required
+    TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH=YOURPATHHERE
     FLICKR_CLIENT_ID=YOURCLIENTIDHERE
     FLICKR_CLIENT_SECRET=YOURCLIENTSECRETHERE
     FOURSQUARE_CLIENT_ID=YOURCLIENTIDHERE
@@ -88,9 +87,15 @@ Read the section [Setting Up Custom Shapefiles and GeoJSON](#setting-up-custom-s
 
 harvest ye photos
 ------------------------------------------
-With the database setup, the next move is to run the Node.js harvesters which query Flickr, Foursquare or Instagram for photos related to the park areas that were loaded.
-We can kick off these harvesters using `foreman` commands such as `$ foreman run instagram`. For future consideration, note that the `foreman` harvester commands
-will automatically run the table creation and loading `make` commands that we manually called [Getting Started Locally](#getting-started-locally) above. So you can
+With the database setup, the next step is to run the Node.js harvesters which query Flickr, Foursquare or Instagram for photos related to the loaded park areas.
+We can kick off these harvesters using `foreman` commands such as:
+
+    ```bash
+    $ foreman run instagram
+    ```
+
+For future consideration, note that the `foreman` harvester commands
+will run the table creation and loading `make` commands that we manually called in [Getting Started Locally](#getting-started-locally) above. So you can
 rely on only running `foreman` from now on. Review the harvester-specific sections [Foursquare Harvesting](#foursquare-harvesting),
 [Flickr Harvesting](#flickr-harvesting), [Instagram Harvesting](#instagram-harvesting) for instructions on running each
 

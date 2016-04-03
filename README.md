@@ -1,4 +1,4 @@
-Park Social Media Harvesters - www.caliparks.org
+www.caliparks.org Social Media Harvesters
 ==================================================
 Mapping social media activity in parks and other open spaces. This repository contains the Heroku-based Node.js social
 media harvesters. Most of this code has been copied over from the [local-harvester branch](https://github.com/stamen/parks.stamen.com/tree/local-harvester) of the repository.

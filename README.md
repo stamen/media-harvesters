@@ -68,7 +68,7 @@ that are generated to run the Instagram harvester for CPAD park areas are listed
 setting up the CPAD database read the section [Setting Up CPAD Superunits DB](#setting-up-cpad-superunits-db)
 
     ```bash
-    # a table of CPAD superunit polygon geometries from a download CPAD shapefile
+    # a table of CPAD superunit polygon geometries from a downloaded CPAD shapefile
     cpad_2015b
 
     # a table of CPAD superunit geometries, the same ones above, with some column names changed
@@ -84,7 +84,7 @@ setting up the CPAD database read the section [Setting Up CPAD Superunits DB](#s
 0. Let's play with some sample data in this repository to setup custom park areas based on our own datasets.
 Read the section [Setting Up Custom Shapefiles and GeoJSON](#setting-up-custom-shapefiles-and-geojson-db)
 
-0. Move on to the [Harvesting Photos Section](#harvesting-photos)
+0. Move on to the [Harvesting Ye Photos Section](#harvest-ye-photos)
 
 harvest ye photos
 ------------------------------------------

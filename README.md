@@ -1,8 +1,20 @@
-parks.stamen.com social media harvesters
-=========
+Park Social Media Harvesters - www.caliparks.org
+==================================================
 Mapping social media activity in parks and other open spaces. This repository contains the Heroku-based node.js social
 media harvesters. Most of this code has been copied over from the [local-harvester branch](https://github.com/stamen/parks.stamen.com/tree/local-harvester) of the repository.
 These harvesters collect geotagged content from Flickr, Foursquare, and Instagram. (currently Twitter is handled using a separate codebase).
+
+Index
+=======
+  * [More about the project](#more-about-the-project)
+  * [Getting started locally](#getting-started-locally)
+    * [Setting up environment variables](#setting-up-environment-variables)
+    * [Setting up the database tables](#setting-up-the-database-tables)
+    * [Harvesting Photos](#harvesting-photos)
+  * [Foursquare harvesting](#foursquare-harvesting)
+  * [Flickr harvesting](#flickr-harvesting)
+  * [Instagram harvesting](#instagram-harvesting)
+  * [About the algorithms](#about-the-algorithms)
 
 More about the project
 =====================
@@ -28,8 +40,6 @@ the following directions in case you're unsure how to fill them out right now:
     FLICKR_CLIENT_SECRET=YOURCLIENTSECRETHERE
     FOURSQUARE_CLIENT_ID=YOURCLIENTIDHERE
     FOURSQUARE_CLIENT_SECRET=YOURCLIENTSECRETHERE
-    INSTAGRAM_CLIENT_ID=YOURCLIENTIDHERE
-    INSTAGRAM_CLIENT_SECRET=YOURCLIENTSECRETHERE
     INSTAGRAM_ACCESS_TOKEN=YOURACCESSTOKENHERE
     ```
 
@@ -127,8 +137,9 @@ this example will use `test_epsg_3310_in_subfolder.zip`. Now update the `.env` f
         85
     (1 row)
     ```
+0. Move on to the [Harvesting Photos](#
 
-Harvest Photos
+Harvesting Photos
 ------------------------------------------
 
 With the database setup, the next move is to run the harvesters which query Flickr, Foursquare or Instagram for photos related to the park areas that were loaded.
@@ -138,7 +149,6 @@ rely on only running `foreman` from now on. Review the following harvester-speci
 
 Foursquare harvesting
 =======================
-
 Harvesting the venues the first time (determining the existence of venues in each park) is the hard part. This should be re-run periodically to catch any new venues that appear. [more details needed here]
 
 To collect venues the first time: 
@@ -151,17 +161,42 @@ Locally: `foreman run foursquare_update`
 
 Flickr harvesting
 ===================
-
 *	Command-line node app queries Flickr API for bounding box of each park. To run locally: `foreman run flickr`
 *	Node app saves harvested photos to the table `flickr_photos`
 *	Then `make flickrParkTable` uniquifies the table, and inserts the results into `park_flickr_photos`
 
 Instagram harvesting
 =======================
+0. In late 2015 Instagram started requiring an `access_token` for API requests. If you don't have one, go sign up for an Instagram account and
+then [register the harvester](https://www.instagram.com/developer/clients/manage/). Registering your application should
+generate a `Cliend ID` and `Client Secret` that you'll want save for later. The instructions below are a summary of those found on
+[Instagram](https://www.instagram.com/developer/authentication/):
 
-*	Command-line node app queries Instagram API for an array of circles covering of each park. To run locally: `foreman run instagram`
-*	Node app saves harvested photos to the table `instagram_photos`
-*	Then `make instagramParkTable` uniquifies the table, and inserts the results into `park_instagram_photos`
+0. Now authorize the harvester we registered to make requests on behalf of your Instagram account placing this URL into your browser.
+Note: the `redirect_uri` has to match the `redirect_uri` you specified in the registration form. Likewise, `client_id` should match your
+`Client ID`.
+
+    ```bash
+    https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=token&scope=basic+public_content
+    ```
+
+0. At this point, Instagram presents the user with a login screen and then a confirmation screen where you grant the harvester. Once granted,
+you will be redirected to the `redirect_uri` in the URL and there should be a parameter called `auth_token` at the end of it. Here's what that redirect URL
+might look like if your `redirect_uri` was registered as `localhost`:
+
+    ```bash
+    http://localhost/#access_token=1234456.1234567.13423546766708
+    ```
+
+0. Take the `access_token` and save it the `.env` as `INSTAGRAM_ACCESS_TOKEN`:
+
+    ```bash
+    INSTAGRAM_ACCESS_TOKEN=1234456.1234567.13423546766708
+    ```
+0. The harvester is all setup to run against Instagram. Change to the root harvester directory, the one with the `Makefile` in it.
+To run locally type `foreman run instagram`. The CLI node app queries Instagram API for an array of circles covering each park.
+
+0. The app saves harvested photos to the table `instagram_photos`
 
 About the algorithms
 ======================

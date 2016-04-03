@@ -7,7 +7,7 @@ CREATE TABLE instagram_regions (
   count integer NOT NULL DEFAULT 0,
   last_fetched timestamp,
   split boolean NOT NULL DEFAULT false,
-  geom geometry(Polygon, 3310) NOT NULL UNIQUE
+  geom geometry(Polygon, 3857) NOT NULL UNIQUE
 );
 
 CREATE INDEX instagram_regions_geom_gist ON instagram_regions USING GIST(geom);
@@ -18,6 +18,6 @@ INSERT INTO instagram_regions (center, radius, geom)
     5000::double precision AS radius,
     geom
   FROM (
-    SELECT GetIntersectingHexagons(ST_SetSRID(ST_Extent(geom), 3310), 5000) geom
+    SELECT GetIntersectingHexagons(ST_SetSRID(ST_Extent(geom), 3857), 5000) geom
     FROM superunits
   ) AS _;

@@ -181,11 +181,11 @@ db/load_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv d
 	    $(eval TARGET := /vsizip/$(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
 	    $(eval TARGET := $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH))) \
 	ogr2ogr --config PG_USE_COPY YES \
-		-t_srs EPSG:4326 \
+		-t_srs EPSG:3857 \
 		-nlt PROMOTE_TO_MULTI \
 		-nln $(DEFAULT_SUPERUNIT_TABLENAME) \
 		-lco GEOMETRY_NAME=geom \
-		-lco SRID=4326 \
+		-lco SRID=3857 \
 		-overwrite \
 		-f PGDump /vsistdout/ $(TARGET) | pv | psql -q
 

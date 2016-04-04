@@ -156,7 +156,7 @@ db: DATABASE_URL deps/npm
 	@psql -c "SELECT 1" > /dev/null 2>&1 || \
 	createdb
 
-db/all: db/cpad_superunits db/flickr db/foursquare db/instagram
+db/all: db/cpad_superunits_2015 db/flickr_cpad db/foursquare_cpad db/instagram_cpad
 
 db/postgis: db
 	$(call create_extension)

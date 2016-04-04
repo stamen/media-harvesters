@@ -139,48 +139,25 @@ deps/pv:
 deps/npm:
 	@npm install
 
-data/CPAD_Units_nightly.zip:
-	mkdir -p $$(dirname $@)
-	curl -sL http://websites.greeninfo.org/common_data/California/Public_Lands/CPAD/dev/CPAD2014a4/CPAD_Units_nightly.zip -o $@
-
-data/cpad_2014b7_superunits_name_manager_access.zip:
-	mkdir -p $$(dirname $@)
-	curl -sLf http://websites.greeninfo.org/common_data/California/Public_Lands/CPAD/dev/CPAD2014b/cpad_2014b7_superunits_name_manager_access.zip -o $@
-
 export DEFAULT_SUPERUNIT_TABLENAME = superunits
-CPAD_2015b_defaults:
+cpad_2015a_defaults:
 	$(eval DEFAULT_SUPERUNIT_TABLENAME := $(word 1,$(subst _defaults,,$@)))
-	$(eval TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH := data/CPAD_2015b_superunits_name_manager_access.zip/CPAD_2015b/CPAD_2015b_SuperUnits.shp)
+	$(eval TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH := data/cpad_2015a_superunits_name_manager_access.zip/CPAD_2015a_SuperUnits.shp)
 
-data/CPAD_2015b_superunits_name_manager_access.zip:
-	mkdir -p $$(dirname $@)
-	curl -sLf http://atlas.ca.gov/casil/planning/Land_Ownership/GreenInfoNetworkProject/CPAD-2015b-December2015/CPAD_2015b.zip -o $@
-        
+data/cpad_2015a_superunits_name_manager_access.zip:
+	@mkdir -p $$(dirname $@)
+	@curl -sLf http://data.stamen.com.s3.amazonaws.com/caliparks/CPAD_2015a_SuperUnits.zip -o $@
+
 db: DATABASE_URL deps/npm
 	@psql -c "SELECT 1" > /dev/null 2>&1 || \
 	createdb
 
-db/all: db/cpad_superunits_2015 db/flickr_cpad db/foursquare_cpad db/instagram_cpad
+db/all: db/cpad_superunits db/flickr_cpad db/foursquare_cpad db/instagram_cpad
 
 db/postgis: db
 	$(call create_extension)
 
-db/cpad_2014: db/cpad_2014b7
-
-db/cpad_2015: db/CPAD_2015b
-
-db/cpad_2014b7: db/postgis data/cpad_2014b7_superunits_name_manager_access.zip deps/gdal deps/pv deps/npm
-	@psql -c "\d cpad_2014b7" > /dev/null 2>&1 || \
-	ogr2ogr --config PG_USE_COPY YES \
-		-t_srs EPSG:3310 \
-		-nlt PROMOTE_TO_MULTI \
-		-nln cpad_2014b7 \
-		-lco GEOMETRY_NAME=geom \
-		-lco SRID=3310 \
-		-f PGDump /vsistdout/ \
-		/vsizip/$(word 2,$^)/cpad_2014b7_superunits_name_manager_access.shp | pv | psql -q
-
-db/CPAD_2015b: data/CPAD_2015b_superunits_name_manager_access.zip CPAD_2015b_defaults db/load_data
+db/cpad_2015a: data/cpad_2015a_superunits_name_manager_access.zip cpad_2015a_defaults db/load_data
 
 db/load_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv deps/npm
 	@psql -c "\d $(DEFAULT_SUPERUNIT_TABLENAME)" > /dev/null 2>&1 || \
@@ -196,10 +173,7 @@ db/load_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv d
 		-overwrite \
 		-f PGDump /vsistdout/ $(TARGET) | pv | psql -q
 
-db/cpad_superunits: db/cpad_2014
-	$(call create_relation)
-
-db/cpad_superunits_2015: db/cpad_2015
+db/cpad_superunits: db/cpad_2015a
 	$(call create_relation)
 
 db/superunit_changes: db
@@ -228,7 +202,7 @@ db/GetIntersectingHexagons: db/CDB_HexagonGrid
 #######################################
 db/flickr_custom: db/load_data db/flickr_photos db/flickr_regions
 
-db/flickr_cpad: db/cpad_superunits_2015 db/flickr_photos db/flickr_regions
+db/flickr_cpad: db/cpad_superunits db/flickr_photos db/flickr_regions
 
 db/flickr_photos: db
 	$(call create_relation)
@@ -241,7 +215,7 @@ db/flickr_regions: db/CDB_RectangleGrid
 #######################################
 db/foursquare_custom: db/load_data db/foursquare_venues db/foursquare_regions
 
-db/foursquare_cpad: db/cpad_superunits_2015 db/foursquare_venues db/foursquare_regions
+db/foursquare_cpad: db/cpad_superunits db/foursquare_venues db/foursquare_regions
 
 db/foursquare_venues: db
 	$(call create_relation)
@@ -254,7 +228,7 @@ db/foursquare_regions: db/CDB_RectangleGrid
 #######################################
 db/instagram_custom: db/load_data db/instagram_regions db/instagram_photos
 
-db/instagram_cpad: db/cpad_superunits_2015 db/instagram_regions db/instagram_photos
+db/instagram_cpad: db/cpad_superunits db/instagram_regions db/instagram_photos
 
 db/instagram_photos: db
 	$(call create_relation)

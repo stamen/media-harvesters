@@ -9,6 +9,10 @@ $(foreach a,$(shell cat .env 2> /dev/null),$(eval $(call EXPAND_EXPORTS,$(a))))
 # expand PG* environment vars
 $(foreach a,$(shell set -a && source .env 2> /dev/null; node_modules/.bin/pgexplode),$(eval $(call EXPAND_EXPORTS,$(a))))
 
+# helper rule to see PG environment settings
+test_pg_envs:
+	$(shell echo env)
+
 define create_relation
 @psql -v ON_ERROR_STOP=1 -qXc "\d $(subst db/,,$@)" > /dev/null 2>&1 || \
 	psql -v ON_ERROR_STOP=1 -qX1f sql/$(subst db/,,$@).sql

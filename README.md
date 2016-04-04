@@ -56,10 +56,9 @@ overview of the database setup
 0. Make sure the `DATABASE_URL` environment variable is filled out, it's required by the `Makefile`:
 
     ```bash
-    # currently the command to create the database defaults
-    # to creating a database named after the user running the command
-    # so the connection string `postgres://username@hostname:port/dbname` becomes
-    DATABASE_URL=postgres://rancho@localhost:5432/rancho
+    # assuming your user is 'rancho' and the database is 'openspaces'
+    # the connection string `postgres://username@hostname:port/dbname` becomes
+    DATABASE_URL=postgres://rancho@localhost:5432/openspaces
     ```
 
 0. Each harvester works with their own specific tables and a shared `superunits` table. For example, the output tables

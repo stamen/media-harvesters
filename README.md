@@ -98,12 +98,13 @@ Review the harvester-specific sections [Foursquare Harvesting](#foursquare-harve
 
 Setting Up CPAD Superunits DB
 ==============================
-If you want to use CPAD park geometries to seed the database then all you have to do is run this command for the appropriate harvester.
-Here we are setting up CPAD geometries for an Instagram harvester or Flickr harvester:
+If you want to seed the database with CPAD park geometries then you need to run a `make` command for the intended harvester.
+Below we load CPAD geometries for an Instagram harvester, Flickr harvester and Foursquare harvester:
 
 ```bash
-make db/instagram_cpad
-make db/flickr_cpad
+$ make db/instagram_cpad
+$ make db/flickr_cpad
+$ make db/foursquare_cpad
 ```
 
 

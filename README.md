@@ -40,7 +40,8 @@ the expected values if you're unsure how to fill them out right now:
     FLICKR_CLIENT_SECRET=YOURCLIENTSECRETHERE
     FOURSQUARE_CLIENT_ID=YOURCLIENTIDHERE
     FOURSQUARE_CLIENT_SECRET=YOURCLIENTSECRETHERE
-    INSTAGRAM_ACCESS_TOKEN=YOURACCESSTOKENHERE
+    INSTAGRAM_CLIENT_ID=YOURCLIENTIDHERE
+    INSTAGRAM_CLIENT_SECRET=YOURSECRETIDHERE
     ```
 
 overview of the database setup
@@ -175,7 +176,7 @@ then [register the harvester application ](https://foursquare.com/developers/app
 generate a `Client Id` and `Client Secret` that you'll want to save in the `.env` file as:
 
     ```bash
-    FOURSQUARE_CLIENT_ID=12412523erwty7654598 # key
+    FOURSQUARE_CLIENT_ID=12412523erwty7654598
     FOURSQUARE_CLIENT_SECRET=12412523erwty7654598
     ```
 0. The harvester is all setup to run against Foursquare. Change to the root harvester directory, the one with the `Makefile` in it.
@@ -214,32 +215,17 @@ To run locally type `foreman run flickr`. The CLI node app queries the Flickr AP
 
 Instagram Harvesting
 =======================
-0. In late 2015 Instagram started requiring an `access_token` for API requests. If you don't have one, go sign up for an Instagram account and
-then [register the harvester application](https://www.instagram.com/developer/clients/manage/). Registering the application should
-generate a `Client ID` and `Client Secret` that you'll want to save for later. The instructions below are a summary of those found on
-[Instagram](https://www.instagram.com/developer/authentication/)
-
-0. Now authorize the harvester we registered to make requests on behalf of your Instagram account placing this URL into your browser.
-Note: the `redirect_uri` has to match the `redirect_uri` you specified in the registration form. Likewise, `client_id` should match your
-`Client ID`.
+0. If you don't have one, go sign up for an Instagram account and
+then [register the harvester application](https://www.instagram.com/developer/clients/manage/). As of `12/01/2015` it seems
+that you'll have to promote the application out of `Sandbox Mode` to be able to get API results back. Read more about
+[going live](https://www.instagram.com/developer/sandbox/) for instructions on how to do that. Registering the application should
+generate a `Client ID` and `Client Secret` that you'll want to save in the `.env` file as:
 
     ```bash
-    https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=token&scope=basic+public_content
+    INSTAGRAM_CLIENT_ID=12412523erwty7654598
+    INSTAGRAM_CLIENT_SECRET=12412523erwty7654598
     ```
 
-0. At this point, Instagram presents the user with a login screen and then a confirmation screen where you grant the harvester. Once granted,
-you will be redirected to the `redirect_uri` in the URL and there should be a parameter called `auth_token` at the end of it. Here's what that redirect URL
-might look like if your `redirect_uri` was registered as `localhost`:
-
-    ```bash
-    http://localhost/#access_token=1234456.1234567.13423546766708
-    ```
-
-0. Take the `access_token` and save it the `.env` as `INSTAGRAM_ACCESS_TOKEN`:
-
-    ```bash
-    INSTAGRAM_ACCESS_TOKEN=1234456.1234567.13423546766708
-    ```
 0. The harvester is all setup to run against Instagram. Change to the root harvester directory, the one with the `Makefile` in it.
 To run locally type `foreman run instagram`. The CLI node app queries the Instagram API for an array of circles covering each park.
 

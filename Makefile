@@ -173,6 +173,20 @@ db/load_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/postgis deps/gdal deps/pv d
 		-overwrite \
 		-f PGDump /vsistdout/ $(TARGET) | pv | psql -q
 
+export LAYER_NAME 
+export TARGET_FILE
+db/ogrinfo_setup: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH 
+	$(if $(findstring .zip, $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
+		$(eval TARGET_FILE := /vsizip/$(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
+		$(eval TARGET_FILE := $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH))) \
+	$(if $(findstring .json, $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)), \
+		$(eval LAYER_NAME := OGRGeoJSON), \
+		$(eval LAYER_NAME := $(basename $(notdir $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)))))
+
+db/ogrinfo_validate_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/ogrinfo_setup deps/gdal
+	@ogrinfo -ro -so $(TARGET_FILE) $(LAYER_NAME) 2> /dev/null | grep -i "UNIT_ID: Integer" > /dev/null 2>&1 \
+	|| (echo Error: exit_code="$$?" make sure your $(TARGET_FILE) has a unique integer column \'unit_id\' && false)
+
 db/cpad_superunits: db/cpad_2015a
 	$(call create_relation)
 
@@ -200,7 +214,7 @@ db/GetIntersectingHexagons: db/CDB_HexagonGrid
 #######################################
 ### Flickr database tables ############
 #######################################
-db/flickr_custom: db/load_data db/flickr_photos db/flickr_regions
+db/flickr_custom: db/ogrinfo_validate_data db/load_data db/flickr_photos db/flickr_regions
 
 db/flickr_cpad: db/cpad_superunits db/flickr_photos db/flickr_regions
 
@@ -213,7 +227,7 @@ db/flickr_regions: db/CDB_RectangleGrid
 #######################################
 ### Foursquare database tables ########
 #######################################
-db/foursquare_custom: db/load_data db/foursquare_venues db/foursquare_regions
+db/foursquare_custom: db/ogrinfo_validate_data db/load_data db/foursquare_venues db/foursquare_regions
 
 db/foursquare_cpad: db/cpad_superunits db/foursquare_venues db/foursquare_regions
 
@@ -226,7 +240,7 @@ db/foursquare_regions: db/CDB_RectangleGrid
 #######################################
 ### Instagram database tables #########
 #######################################
-db/instagram_custom: db/load_data db/instagram_regions db/instagram_photos
+db/instagram_custom: db/ogrinfo_validate_data db/load_data db/instagram_regions db/instagram_photos
 
 db/instagram_cpad: db/cpad_superunits db/instagram_regions db/instagram_photos
 

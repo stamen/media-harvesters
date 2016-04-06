@@ -4,16 +4,6 @@
     {
       "type": "Feature",
       "properties": {
-        "stroke": "#555555",
-        "stroke-width": 2,
-        "stroke-opacity": 1,
-        "fill": "#555555",
-        "fill-opacity": 0.5,
-        "square_feet": 798227302.29,
-        "acres": 18324.75,
-        "unit_id": 1,
-        "unit_name": "Mount Vernon",
-        "label_name": "City of Mount Vernon"
       },
       "geometry": {
         "type": "Polygon",
@@ -58,16 +48,6 @@
     {
       "type": "Feature",
       "properties": {
-        "stroke": "#555555",
-        "stroke-width": 2,
-        "stroke-opacity": 1,
-        "fill": "#555555",
-        "fill-opacity": 0.5,
-        "square_feet": 1087956849.66,
-        "acres": 24976.02,
-        "unit_id": 2,
-        "unit_name": "Bellingham",
-        "label_name": "City of Bellingham"
       },
       "geometry": {
         "type": "Polygon",
@@ -120,16 +100,6 @@
     {
       "type": "Feature",
       "properties": {
-        "stroke": "#555555",
-        "stroke-width": 2,
-        "stroke-opacity": 1,
-        "fill": "#555555",
-        "fill-opacity": 0.5,
-        "square_feet": 8986100091.46,
-        "acres": 206292.2,
-        "unit_id": 3,
-        "unit_name": "Seattle",
-        "label_name": "Seattle Metro Area"
       },
       "geometry": {
         "type": "Polygon",
@@ -206,16 +176,6 @@
     {
       "type": "Feature",
       "properties": {
-        "stroke": "#555555",
-        "stroke-width": 2,
-        "stroke-opacity": 1,
-        "fill": "#555555",
-        "fill-opacity": 0.5,
-        "square_feet": 82798045834.24,
-        "acres": 1900779.09,
-        "unit_id": 4,
-        "unit_name": "Olympics",
-        "label_name": "Olympic National Park"        
       },
       "geometry": {
         "type": "Polygon",

@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS superunits;
 CREATE TABLE superunits AS
   SELECT
-    suid_nma AS unit_id,
+    suid_nma AS superunit_id,
     park_name AS unit_name,
     access_typ,
     mng_ag_id AS manager_id,

@@ -139,7 +139,7 @@ deps/pv:
 deps/npm:
 	@npm install
 
-export DEFAULT_SUPERUNIT_TABLENAME = superunits
+export DEFAULT_SUPERUNIT_TABLENAME = superunits_temp
 cpad_2015a_defaults:
 	$(eval DEFAULT_SUPERUNIT_TABLENAME := $(word 1,$(subst _defaults,,$@)))
 	$(eval TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH := data/cpad_2015a_superunits_name_manager_access.zip/CPAD_2015a_SuperUnits.shp)
@@ -190,6 +190,9 @@ db/ogrinfo_validate_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/ogrinfo_setup d
 db/cpad_superunits: db/cpad_2015a
 	$(call create_relation)
 
+db/custom_superunits: db/load_data
+	$(call create_relation)
+
 db/superunit_changes: db
 	$(call create_relation)
 
@@ -214,7 +217,7 @@ db/GetIntersectingHexagons: db/CDB_HexagonGrid
 #######################################
 ### Flickr database tables ############
 #######################################
-db/flickr_custom: db/ogrinfo_validate_data db/load_data db/flickr_photos db/flickr_regions
+db/flickr_custom: db/ogrinfo_validate_data db/custom_superunits db/load_data db/flickr_photos db/flickr_regions
 
 db/flickr_cpad: db/cpad_superunits db/flickr_photos db/flickr_regions
 
@@ -227,7 +230,7 @@ db/flickr_regions: db/CDB_RectangleGrid
 #######################################
 ### Foursquare database tables ########
 #######################################
-db/foursquare_custom: db/ogrinfo_validate_data db/load_data db/foursquare_venues db/foursquare_regions
+db/foursquare_custom: db/ogrinfo_validate_data db/custom_superunits db/load_data db/foursquare_venues db/foursquare_regions
 
 db/foursquare_cpad: db/cpad_superunits db/foursquare_venues db/foursquare_regions
 
@@ -240,7 +243,7 @@ db/foursquare_regions: db/CDB_RectangleGrid
 #######################################
 ### Instagram database tables #########
 #######################################
-db/instagram_custom: db/ogrinfo_validate_data db/load_data db/instagram_regions db/instagram_photos
+db/instagram_custom: db/ogrinfo_validate_data db/custom_superunits db/load_data db/instagram_regions db/instagram_photos
 
 db/instagram_cpad: db/cpad_superunits db/instagram_regions db/instagram_photos
 

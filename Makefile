@@ -184,8 +184,8 @@ db/ogrinfo_setup: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH
 		$(eval LAYER_NAME := $(basename $(notdir $(TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH)))))
 
 db/ogrinfo_validate_data: TARGET_GEOJSON_OR_SHAPEFILE_ABSPATH db/ogrinfo_setup deps/gdal
-	@ogrinfo -ro -so $(TARGET_FILE) $(LAYER_NAME) 2> /dev/null | grep -i "UNIT_ID: Integer" > /dev/null 2>&1 \
-	|| (echo Error: exit_code="$$?" make sure your $(TARGET_FILE) has a unique integer column \'unit_id\' && false)
+	@ogrinfo -ro -so $(TARGET_FILE) $(LAYER_NAME) 2> /dev/null | grep -i "Geometry: Polygon" > /dev/null 2>&1 \
+	|| (echo Error exit_code="$$?": make sure your $(TARGET_FILE) is \'Polygon\' features && false)
 
 db/cpad_superunits: db/cpad_2015a
 	$(call create_relation)

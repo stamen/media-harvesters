@@ -7,10 +7,6 @@ var async = require("async"),
     request = require("request"),
     env = require("require-env");
 
-var flickr = require("./lib/flickr"),
-    foursquare = require("./lib/foursquare"),
-    instagram = require("./lib/instagram");
-
 // Next venues
 
 function getFoursquareNextVenues(venue_id, callback) {
@@ -208,11 +204,11 @@ var main = function() {
 
   if (argv.t == 'flickr') {
 
-    flickr();
+    require("./lib/flickr")();
 
   } else if (argv.t == 'foursquare_venues') {
 
-    foursquare();
+    require("./lib/foursquare")();
 
   } else if (argv.t == 'foursquare_update') {
 
@@ -229,7 +225,7 @@ var main = function() {
 
   } else if (argv.t == 'instagram') {
 
-    instagram();
+    require("./lib/instagram")();
 
   } else {
     console.log(argv.t, "not understood");

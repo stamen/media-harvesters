@@ -18,6 +18,6 @@ INSERT INTO instagram_regions (center, radius, geom)
     5000::double precision AS radius,
     geom
   FROM (
-    SELECT GetIntersectingHexagons(ST_SetSRID(ST_Extent(geom), (SELECT ST_SRID(geom) FROM superunits LIMIT 1)), 5000) geom
+    SELECT GetIntersectingHexagons(ST_Buffer(ST_SetSRID(ST_Extent(geom), (SELECT ST_SRID(geom) FROM superunits LIMIT 1)), 5000), 5000) geom
     FROM superunits
   ) AS _;
